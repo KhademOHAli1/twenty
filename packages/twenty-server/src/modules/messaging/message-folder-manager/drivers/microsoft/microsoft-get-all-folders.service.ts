@@ -7,6 +7,8 @@ import {
 
 import { OAuth2ClientManagerService } from 'src/modules/connected-account/oauth2-client-manager/services/oauth2-client-manager.service';
 import { type ConnectedAccountWorkspaceEntity } from 'src/modules/connected-account/standard-objects/connected-account.workspace-entity';
+import { MessageChannelWorkspaceEntity } from 'src/modules/messaging/common/standard-objects/message-channel.workspace-entity';
+import { shouldSyncFolder } from 'src/modules/messaging/message-folder-manager/utils/should-sync-folder.util';
 import { MicrosoftHandleErrorService } from 'src/modules/messaging/message-import-manager/drivers/microsoft/services/microsoft-handle-error.service';
 import { StandardFolder } from 'src/modules/messaging/message-import-manager/drivers/types/standard-folder';
 import { getStandardFolderByRegex } from 'src/modules/messaging/message-import-manager/drivers/utils/get-standard-folder-by-regex';
@@ -35,6 +37,7 @@ export class MicrosoftGetAllFoldersService implements MessageFolderDriver {
       ConnectedAccountWorkspaceEntity,
       'accessToken' | 'refreshToken' | 'id' | 'handle' | 'provider'
     >,
+    messageChannel: Pick<MessageChannelWorkspaceEntity, 'syncAllFolders'>,
   ): Promise<MessageFolder[]> {
     try {
       const microsoftClient =
@@ -67,8 +70,18 @@ export class MicrosoftGetAllFoldersService implements MessageFolderDriver {
         }
 
         const standardFolder = getStandardFolderByRegex(folder.displayName);
+
+        if (this.shouldExcludeFolder(standardFolder)) {
+          continue;
+        }
+
         const isSentFolder = this.isSentFolder(standardFolder);
-        const isSynced = this.shouldSyncByDefault(standardFolder);
+        const isInbox = standardFolder === StandardFolder.INBOX;
+        const isSynced = shouldSyncFolder(
+          standardFolder,
+          messageChannel.syncAllFolders,
+          isInbox,
+        );
 
         folderInfos.push({
           externalId: folder.id,
@@ -97,15 +110,11 @@ export class MicrosoftGetAllFoldersService implements MessageFolderDriver {
     return standardFolder === StandardFolder.SENT;
   }
 
-  private shouldSyncByDefault(standardFolder: StandardFolder | null): boolean {
-    if (
-      standardFolder === StandardFolder.JUNK ||
+  private shouldExcludeFolder(standardFolder: StandardFolder | null): boolean {
+    return (
       standardFolder === StandardFolder.DRAFTS ||
-      standardFolder === StandardFolder.TRASH
-    ) {
-      return false;
-    }
-
-    return true;
+      standardFolder === StandardFolder.TRASH ||
+      standardFolder === StandardFolder.JUNK
+    );
   }
 }
