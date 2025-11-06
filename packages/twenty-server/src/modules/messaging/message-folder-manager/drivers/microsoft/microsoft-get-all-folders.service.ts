@@ -13,6 +13,7 @@ import { MessageChannelWorkspaceEntity } from 'src/modules/messaging/common/stan
 import { shouldSyncFolderByDefault } from 'src/modules/messaging/message-folder-manager/utils/should-sync-folder-by-default.util';
 import { MicrosoftMessageListFetchErrorHandler } from 'src/modules/messaging/message-import-manager/drivers/microsoft/services/microsoft-message-list-fetch-error-handler.service';
 import { StandardFolder } from 'src/modules/messaging/message-import-manager/drivers/types/standard-folder';
+import { getStandardFolderByRegex } from 'src/modules/messaging/message-import-manager/drivers/utils/get-standard-folder-by-regex';
 
 type MicrosoftGraphFolder = {
   id: string;
@@ -72,9 +73,9 @@ export class MicrosoftGetAllFoldersService implements MessageFolderDriver {
           continue;
         }
 
-        const standardFolder = this.getStandardFolderFromWellKnownName(
-          folder.wellKnownName,
-        );
+        const standardFolder = folder.wellKnownName
+          ? getStandardFolderByRegex(folder.wellKnownName)
+          : null;
         const isSentFolder = this.isSentFolder(standardFolder);
         const isSynced = shouldSyncFolderByDefault(
           standardFolder,
@@ -110,29 +111,6 @@ export class MicrosoftGetAllFoldersService implements MessageFolderDriver {
 
   private isSentFolder(standardFolder: StandardFolder | null): boolean {
     return standardFolder === StandardFolder.SENT;
-  }
-
-  private getStandardFolderFromWellKnownName(
-    wellKnownName?: string,
-  ): StandardFolder | null {
-    if (!isDefined(wellKnownName)) {
-      return null;
-    }
-
-    switch (wellKnownName.toLowerCase()) {
-      case 'inbox':
-        return StandardFolder.INBOX;
-      case 'drafts':
-        return StandardFolder.DRAFTS;
-      case 'sentitems':
-        return StandardFolder.SENT;
-      case 'deleteditems':
-        return StandardFolder.TRASH;
-      case 'junkemail':
-        return StandardFolder.JUNK;
-      default:
-        return null;
-    }
   }
 
   /*
