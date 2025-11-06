@@ -13,7 +13,6 @@ import { MessageChannelWorkspaceEntity } from 'src/modules/messaging/common/stan
 import { shouldSyncFolderByDefault } from 'src/modules/messaging/message-folder-manager/utils/should-sync-folder-by-default.util';
 import { ImapClientProvider } from 'src/modules/messaging/message-import-manager/drivers/imap/providers/imap-client.provider';
 import { ImapFindSentFolderService } from 'src/modules/messaging/message-import-manager/drivers/imap/services/imap-find-sent-folder.service';
-import { StandardFolder } from 'src/modules/messaging/message-import-manager/drivers/types/standard-folder';
 import { getStandardFolderByRegex } from 'src/modules/messaging/message-import-manager/drivers/utils/get-standard-folder-by-regex';
 
 @Injectable()
@@ -84,15 +83,10 @@ export class ImapGetAllFoldersService implements MessageFolderDriver {
 
       pathToExternalIdMap.set(sentFolder.path, externalId);
 
-      const isSynced = shouldSyncFolderByDefault(
-        messageChannel.messageFolderImportPolicy,
-        StandardFolder.SENT,
-      );
-
       folders.push({
         externalId,
         name: sentFolder.name,
-        isSynced,
+        isSynced: true,
         isSentFolder: true,
         parentFolderId: sentMailbox?.parentPath || null,
       });
