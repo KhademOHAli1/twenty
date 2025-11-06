@@ -49,12 +49,10 @@ export class GmailGetAllFoldersService implements MessageFolderDriver {
     standardFolder: StandardFolder | null,
     messageFolderImportPolicy: MessageFolderImportPolicy,
   ): boolean {
-    // Exclude Gmail-specific labels (categories, chat, etc.)
     if (MESSAGING_GMAIL_DEFAULT_NOT_SYNCED_LABELS.includes(labelId)) {
       return false;
     }
 
-    // Use shared logic for standard folder exclusions and policy
     return shouldSyncFolderByDefault(standardFolder, messageFolderImportPolicy);
   }
 
