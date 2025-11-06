@@ -1,8 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
 
-import { gmail_v1 } from 'googleapis';
-import { isDefined } from 'twenty-shared/utils';
-
 import {
   MessageFolder,
   MessageFolderDriver,
@@ -30,14 +27,10 @@ export class GmailGetAllFoldersService implements MessageFolderDriver {
   ) {}
 
   private shouldSyncLabelByDefault(
-    label: gmail_v1.Schema$Label,
+    labelId: string,
     messageFolderImportPolicy: MessageFolderImportPolicy,
   ): boolean {
-    if (!isDefined(label.id) || !isDefined(label.name)) {
-      return false;
-    }
-
-    if (MESSAGING_GMAIL_DEFAULT_NOT_SYNCED_LABELS.includes(label.id)) {
+    if (MESSAGING_GMAIL_DEFAULT_NOT_SYNCED_LABELS.includes(labelId)) {
       return false;
     }
 
@@ -101,7 +94,7 @@ export class GmailGetAllFoldersService implements MessageFolderDriver {
         );
 
         const isSynced = this.shouldSyncLabelByDefault(
-          label,
+          label.id,
           messageChannel.messageFolderImportPolicy,
         );
 
