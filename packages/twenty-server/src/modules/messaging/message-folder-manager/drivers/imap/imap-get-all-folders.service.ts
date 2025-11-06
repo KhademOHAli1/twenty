@@ -13,7 +13,6 @@ import { MessageChannelWorkspaceEntity } from 'src/modules/messaging/common/stan
 import { shouldSyncFolderByDefault } from 'src/modules/messaging/message-folder-manager/utils/should-sync-folder-by-default.util';
 import { ImapClientProvider } from 'src/modules/messaging/message-import-manager/drivers/imap/providers/imap-client.provider';
 import { ImapFindSentFolderService } from 'src/modules/messaging/message-import-manager/drivers/imap/services/imap-find-sent-folder.service';
-import { MessageFolderName } from 'src/modules/messaging/message-import-manager/drivers/imap/types/folders';
 import { StandardFolder } from 'src/modules/messaging/message-import-manager/drivers/types/standard-folder';
 import { getStandardFolderByRegex } from 'src/modules/messaging/message-import-manager/drivers/utils/get-standard-folder-by-regex';
 
@@ -139,7 +138,7 @@ export class ImapGetAllFoldersService implements MessageFolderDriver {
     mailbox: ListResponse,
     existingFolders: MessageFolder[],
   ): boolean {
-    if (this.shouldExcludeFolder(mailbox)) {
+    if (mailbox.flags?.has('\\Noselect')) {
       return false;
     }
 
@@ -154,25 +153,6 @@ export class ImapGetAllFoldersService implements MessageFolderDriver {
     });
 
     return !isDuplicate;
-  }
-
-  private async isInboxFolder(mailbox: ListResponse): Promise<boolean> {
-    if (
-      mailbox.path.toLowerCase() === MessageFolderName.INBOX ||
-      mailbox.specialUse === '\\Inbox'
-    ) {
-      return true;
-    }
-
-    return false;
-  }
-
-  private shouldExcludeFolder(mailbox: ListResponse): boolean {
-    if (mailbox.flags?.has('\\Noselect')) {
-      return true;
-    }
-
-    return false;
   }
 
   private async getUidValidity(
