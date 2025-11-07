@@ -24,6 +24,7 @@ export const RecordIndexBoardContainer = ({
   recordBoardId,
   objectNameSingular,
 }: RecordIndexBoardContainerProps) => {
+  console.log('RecordIndexBoardContainer');
   const { objectMetadataItem } = useObjectMetadataItem({
     objectNameSingular,
   });

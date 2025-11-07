@@ -43,6 +43,7 @@ export const RecordBoardColumnCardsContainer = ({
   recordBoardColumnId,
   droppableProvided,
 }: RecordBoardColumnCardsContainerProps) => {
+  console.log('RecordBoardColumnCardsContainer');
   const { columnDefinition } = useContext(RecordBoardColumnContext);
 
   const columnId = columnDefinition.id;

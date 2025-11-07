@@ -45,9 +45,7 @@ export const ObjectOptionsDropdownHiddenRecordGroupsContent = () => {
   });
 
   const { handleVisibilityChange: handleRecordGroupVisibilityChange } =
-    useRecordGroupVisibility({
-      viewType,
-    });
+    useRecordGroupVisibility();
 
   const viewGroupSettingsUrl = getSettingsPath(SettingsPath.ObjectFieldEdit, {
     objectNamePlural,

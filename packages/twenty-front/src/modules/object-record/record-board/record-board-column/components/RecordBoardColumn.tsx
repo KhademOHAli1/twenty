@@ -3,10 +3,13 @@ import { Droppable } from '@hello-pangea/dnd';
 
 import { RecordBoardColumnCardsContainer } from '@/object-record/record-board/record-board-column/components/RecordBoardColumnCardsContainer';
 import { RecordBoardColumnContext } from '@/object-record/record-board/record-board-column/contexts/RecordBoardColumnContext';
+import { emptyRecordGroupByIdComponentFamilyState } from '@/object-record/record-group/states/emptyRecordGroupByIdComponentFamilyState';
 import { recordGroupDefinitionFamilyState } from '@/object-record/record-group/states/recordGroupDefinitionFamilyState';
 import { recordIndexRecordIdsByGroupComponentFamilyState } from '@/object-record/record-index/states/recordIndexRecordIdsByGroupComponentFamilyState';
+import { recordIndexShouldHideEmptyRecordGroupsComponentState } from '@/object-record/record-index/states/recordIndexShouldHideEmptyRecordGroupsComponentState';
 import { DragAndDropReRenderBreaker } from '@/ui/drag-and-drop/components/DragAndDropReRenderBreaker';
 import { useRecoilComponentFamilyValue } from '@/ui/utilities/state/component-state/hooks/useRecoilComponentFamilyValue';
+import { useRecoilComponentValue } from '@/ui/utilities/state/component-state/hooks/useRecoilComponentValue';
 import { useRecoilValue } from 'recoil';
 
 const StyledColumn = styled.div`
@@ -32,6 +35,7 @@ export const RecordBoardColumn = ({
   recordBoardColumnId,
   recordBoardColumnIndex,
 }: RecordBoardColumnProps) => {
+  console.log('RecordBoardColumn');
   const recordGroupDefinition = useRecoilValue(
     recordGroupDefinitionFamilyState(recordBoardColumnId),
   );
@@ -39,6 +43,24 @@ export const RecordBoardColumn = ({
     recordIndexRecordIdsByGroupComponentFamilyState,
     recordBoardColumnId,
   );
+
+  const shouldHideEmptyRecordGroups = useRecoilComponentValue(
+    recordIndexShouldHideEmptyRecordGroupsComponentState,
+  );
+
+  const isRecordGroupEmpty = useRecoilComponentFamilyValue(
+    emptyRecordGroupByIdComponentFamilyState,
+    recordBoardColumnId,
+  );
+
+  console.log({
+    shouldHideEmptyRecordGroups,
+    isRecordGroupEmpty,
+  });
+
+  if (shouldHideEmptyRecordGroups && isRecordGroupEmpty) {
+    return null;
+  }
 
   if (!recordGroupDefinition) {
     return null;
