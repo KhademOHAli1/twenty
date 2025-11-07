@@ -5,6 +5,7 @@ import { RecordBoardColumnCardsContainer } from '@/object-record/record-board/re
 import { RecordBoardColumnContext } from '@/object-record/record-board/record-board-column/contexts/RecordBoardColumnContext';
 import { recordGroupDefinitionFamilyState } from '@/object-record/record-group/states/recordGroupDefinitionFamilyState';
 import { recordIndexRecordIdsByGroupComponentFamilyState } from '@/object-record/record-index/states/recordIndexRecordIdsByGroupComponentFamilyState';
+import { DragAndDropReRenderBreaker } from '@/ui/drag-and-drop/components/DragAndDropReRenderBreaker';
 import { useRecoilComponentFamilyValue } from '@/ui/utilities/state/component-state/hooks/useRecoilComponentFamilyValue';
 import { useRecoilValue } from 'recoil';
 
@@ -34,7 +35,6 @@ export const RecordBoardColumn = ({
   const recordGroupDefinition = useRecoilValue(
     recordGroupDefinitionFamilyState(recordBoardColumnId),
   );
-
   const recordIdsByGroup = useRecoilComponentFamilyValue(
     recordIndexRecordIdsByGroupComponentFamilyState,
     recordBoardColumnId,
@@ -55,12 +55,15 @@ export const RecordBoardColumn = ({
     >
       <Droppable droppableId={recordBoardColumnId}>
         {(droppableProvided) => (
-          <StyledColumn>
-            <RecordBoardColumnCardsContainer
-              droppableProvided={droppableProvided}
-              recordIds={recordIdsByGroup}
-            />
-          </StyledColumn>
+          <DragAndDropReRenderBreaker memoizationId={recordBoardColumnId}>
+            <StyledColumn>
+              <RecordBoardColumnCardsContainer
+                droppableProvided={droppableProvided}
+                recordBoardColumnId={recordBoardColumnId}
+              />
+            </StyledColumn>
+            {droppableProvided.placeholder}
+          </DragAndDropReRenderBreaker>
         )}
       </Droppable>
     </RecordBoardColumnContext.Provider>

@@ -10,6 +10,7 @@ import { RecordBoardCardMultiDragPreview } from '@/object-record/record-board/re
 import { RecordBoardCardContext } from '@/object-record/record-board/record-board-card/contexts/RecordBoardCardContext';
 import { RecordBoardColumnContext } from '@/object-record/record-board/record-board-column/contexts/RecordBoardColumnContext';
 import { isRecordBoardCardFocusedComponentFamilyState } from '@/object-record/record-board/states/isRecordBoardCardFocusedComponentFamilyState';
+import { DragAndDropReRenderBreaker } from '@/ui/drag-and-drop/components/DragAndDropReRenderBreaker';
 import { useRecoilComponentFamilyValue } from '@/ui/utilities/state/component-state/hooks/useRecoilComponentFamilyValue';
 
 const StyledDraggableContainer = styled.div`
@@ -59,9 +60,13 @@ export const RecordBoardCardDraggableContainer = ({
             data-selectable-id={recordId}
             data-select-disable
           >
-            {isRecordBoardCardFocusActive && <RecordBoardCardHotkeysEffect />}
-            <RecordBoardCard />
-            <RecordBoardCardMultiDragPreview isDragging={snapshot.isDragging} />
+            <DragAndDropReRenderBreaker memoizationId={recordId}>
+              {isRecordBoardCardFocusActive && <RecordBoardCardHotkeysEffect />}
+              <RecordBoardCard />
+              <RecordBoardCardMultiDragPreview
+                isDragging={snapshot.isDragging}
+              />
+            </DragAndDropReRenderBreaker>
           </StyledDraggableContainer>
         )}
       </Draggable>
