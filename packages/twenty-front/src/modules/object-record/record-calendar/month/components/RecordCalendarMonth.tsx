@@ -4,9 +4,9 @@ import { RecordCalendarMonthContextProvider } from '@/object-record/record-calen
 import { useRecordCalendarMonthDaysRange } from '@/object-record/record-calendar/month/hooks/useRecordCalendarMonthDaysRange';
 import { RecordCalendarComponentInstanceContext } from '@/object-record/record-calendar/states/contexts/RecordCalendarComponentInstanceContext';
 import { recordCalendarSelectedDateComponentState } from '@/object-record/record-calendar/states/recordCalendarSelectedDateComponentState';
-import { useHandleDragOneCalendarCard } from '@/object-record/record-drag/calendar/hooks/useHandleDragOneCalendarCard';
-import { useEndRecordDrag } from '@/object-record/record-drag/shared/hooks/useEndRecordDrag';
-import { useStartRecordDrag } from '@/object-record/record-drag/shared/hooks/useStartRecordDrag';
+import { useEndRecordDrag } from '@/object-record/record-drag/hooks/useEndRecordDrag';
+import { useProcessCalendarCardDrop } from '@/object-record/record-drag/hooks/useProcessCalendarCardDrop';
+import { useStartRecordDrag } from '@/object-record/record-drag/hooks/useStartRecordDrag';
 import { useAvailableComponentInstanceIdOrThrow } from '@/ui/utilities/state/component-state/hooks/useAvailableComponentInstanceIdOrThrow';
 import { useRecoilComponentValue } from '@/ui/utilities/state/component-state/hooks/useRecoilComponentValue';
 import styled from '@emotion/styled';
@@ -32,7 +32,8 @@ export const RecordCalendarMonth = () => {
     recordCalendarSelectedDateComponentState,
   );
 
-  const { processDragOperation } = useHandleDragOneCalendarCard();
+  const { processCalendarCardDrop: processDragOperation } =
+    useProcessCalendarCardDrop();
   const { startDrag } = useStartRecordDrag('calendar', recordCalendarId);
   const { endDrag } = useEndRecordDrag('calendar', recordCalendarId);
 

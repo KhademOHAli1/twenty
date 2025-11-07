@@ -4,7 +4,8 @@ import { useRecoilCallback } from 'recoil';
 import { useUpdateOneRecord } from '@/object-record/hooks/useUpdateOneRecord';
 import { useRecordCalendarContextOrThrow } from '@/object-record/record-calendar/contexts/RecordCalendarContext';
 import { calendarDayRecordIdsComponentFamilySelector } from '@/object-record/record-calendar/states/selectors/calendarDayRecordsComponentFamilySelector';
-import { extractRecordPositions } from '@/object-record/record-drag/shared/utils/extractRecordPositions';
+
+import { extractRecordPositions } from '@/object-record/record-drag/utils/extractRecordPositions';
 import { isFieldDateTime } from '@/object-record/record-field/ui/types/guards/isFieldDateTime';
 import { recordStoreFamilyState } from '@/object-record/record-store/states/recordStoreFamilyState';
 import { computeNewPositionOfDraggedRecord } from '@/object-record/utils/computeNewPositionOfDraggedRecord';
@@ -21,7 +22,7 @@ import {
 } from 'date-fns';
 import { isDefined } from 'twenty-shared/utils';
 
-export const useHandleDragOneCalendarCard = () => {
+export const useProcessCalendarCardDrop = () => {
   const { objectMetadataItem } = useRecordCalendarContextOrThrow();
   const { currentView } = useGetCurrentViewOnly();
   const { updateOneRecord } = useUpdateOneRecord({
@@ -32,15 +33,18 @@ export const useHandleDragOneCalendarCard = () => {
     calendarDayRecordIdsComponentFamilySelector,
   );
 
-  const processDragOperation = useRecoilCallback(
+  const processCalendarCardDrop = useRecoilCallback(
     ({ snapshot }) =>
-      async (result: DropResult) => {
-        if (!result.destination || !currentView?.calendarFieldMetadataId)
+      async (calendarCardDropResult: DropResult) => {
+        if (
+          !calendarCardDropResult.destination ||
+          !currentView?.calendarFieldMetadataId
+        )
           return;
 
-        const { draggableId: recordId } = result;
-        const destinationDate = result.destination.droppableId;
-        const destinationIndex = result.destination.index;
+        const { draggableId: recordId } = calendarCardDropResult;
+        const destinationDate = calendarCardDropResult.destination.droppableId;
+        const destinationIndex = calendarCardDropResult.destination.index;
 
         const record = snapshot
           .getLoadable(recordStoreFamilyState(recordId))
@@ -126,6 +130,6 @@ export const useHandleDragOneCalendarCard = () => {
   );
 
   return {
-    processDragOperation,
+    processCalendarCardDrop,
   };
 };

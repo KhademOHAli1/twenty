@@ -2,28 +2,25 @@ import { type DropResult } from '@hello-pangea/dnd';
 
 import { useUpdateOneRecord } from '@/object-record/hooks/useUpdateOneRecord';
 import { getDragOperationType } from '@/object-record/record-drag/shared/utils/getDragOperationType';
+import { processMultiDrag } from '@/object-record/record-drag/utils/processMultiDrag';
+import { processSingleDrag } from '@/object-record/record-drag/utils/processSingleDrag';
 import { RECORD_INDEX_REMOVE_SORTING_MODAL_ID } from '@/object-record/record-index/constants/RecordIndexRemoveSortingModalId';
-import { currentRecordSortsComponentState } from '@/object-record/record-sort/states/currentRecordSortsComponentState';
-import { useRecordTableContextOrThrow } from '@/object-record/record-table/contexts/RecordTableContext';
-import { useModal } from '@/ui/layout/modal/hooks/useModal';
-import { useRecoilComponentCallbackState } from '@/ui/utilities/state/component-state/hooks/useRecoilComponentCallbackState';
-import { useRecoilComponentValue } from '@/ui/utilities/state/component-state/hooks/useRecoilComponentValue';
-import { getSnapshotValue } from '@/ui/utilities/state/utils/getSnapshotValue';
-import { isDefined } from 'twenty-shared/utils';
-
-import { useRecordDragState } from '@/object-record/record-drag/shared/hooks/useRecordDragState';
-import { processMultiDrag } from '@/object-record/record-drag/shared/utils/processMultiDrag';
-
-import { processSingleDrag } from '@/object-record/record-drag/shared/utils/processSingleDrag';
 import { allRecordIdsWithoutGroupsComponentSelector } from '@/object-record/record-index/states/selectors/allRecordIdsWithoutGroupsComponentSelector';
+import { currentRecordSortsComponentState } from '@/object-record/record-sort/states/currentRecordSortsComponentState';
 import { recordStoreFamilyState } from '@/object-record/record-store/states/recordStoreFamilyState';
+import { useRecordTableContextOrThrow } from '@/object-record/record-table/contexts/RecordTableContext';
 import { selectedRowIdsComponentSelector } from '@/object-record/record-table/states/selectors/selectedRowIdsComponentSelector';
 import { useResetVirtualizationBecauseDataChanged } from '@/object-record/record-table/virtualization/hooks/useResetVirtualizationBecauseDataChanged';
 import { useTriggerFetchPages } from '@/object-record/record-table/virtualization/hooks/useTriggerFetchPages';
 import { type RecordWithPosition } from '@/object-record/utils/computeNewPositionOfDraggedRecord';
+import { useModal } from '@/ui/layout/modal/hooks/useModal';
+import { useRecoilComponentCallbackState } from '@/ui/utilities/state/component-state/hooks/useRecoilComponentCallbackState';
+import { useRecoilComponentValue } from '@/ui/utilities/state/component-state/hooks/useRecoilComponentValue';
+import { getSnapshotValue } from '@/ui/utilities/state/utils/getSnapshotValue';
 import { useRecoilCallback } from 'recoil';
+import { isDefined } from 'twenty-shared/utils';
 
-export const useRecordTableWithoutGroupDragOperations = () => {
+export const useProcessTableWithoutGroupRecordDrop = () => {
   const { objectNameSingular, recordTableId } = useRecordTableContextOrThrow();
 
   const { updateOneRecord: updateOneRow } = useUpdateOneRecord({
@@ -43,17 +40,16 @@ export const useRecordTableWithoutGroupDragOperations = () => {
   );
 
   const { openModal } = useModal();
-  const multiDragState = useRecordDragState('table', recordTableId);
 
   const { resetVirtualization } =
     useResetVirtualizationBecauseDataChanged(objectNameSingular);
 
   const { triggerFetchPagesWithoutDebounce } = useTriggerFetchPages();
 
-  const processDragOperationWithoutGroup = useRecoilCallback(
+  const processTableWithoutGroupRecordDrop = useRecoilCallback(
     ({ snapshot }) =>
-      async (result: DropResult) => {
-        if (!result.destination) return;
+      async (tableRecordDropResult: DropResult) => {
+        if (!tableRecordDropResult.destination) return;
 
         if (currentRecordSorts.length > 0) {
           openModal(RECORD_INDEX_REMOVE_SORTING_MODAL_ID);
@@ -65,7 +61,7 @@ export const useRecordTableWithoutGroupDragOperations = () => {
           allRecordIdsWithoutGroupCallbackSelector,
         );
 
-        const draggedRecordId = result.draggableId;
+        const draggedRecordId = tableRecordDropResult.draggableId;
         const selectedRecordIds = getSnapshotValue(
           snapshot,
           selectedRowIdsSelector,
@@ -90,7 +86,7 @@ export const useRecordTableWithoutGroupDragOperations = () => {
 
         if (dragOperationType === 'single') {
           const targetRecordId = allSparseRecordIds.at(
-            result.destination.index,
+            tableRecordDropResult.destination.index,
           );
 
           if (!isDefined(targetRecordId)) {
@@ -117,7 +113,7 @@ export const useRecordTableWithoutGroupDragOperations = () => {
           });
         } else {
           const targetRecordId = allSparseRecordIds.at(
-            result.destination.index,
+            tableRecordDropResult.destination.index,
           );
 
           if (!isDefined(targetRecordId)) {
@@ -129,7 +125,7 @@ export const useRecordTableWithoutGroupDragOperations = () => {
           const multiDragResult = processMultiDrag({
             draggedRecordId,
             targetRecordId: targetRecordId ?? '',
-            selectedRecordIds: multiDragState.originalSelection,
+            selectedRecordIds: originalSelection,
             recordsWithPosition: contiguousRecordsWithPosition,
           });
 
@@ -152,12 +148,12 @@ export const useRecordTableWithoutGroupDragOperations = () => {
       updateOneRow,
       openModal,
       currentRecordSorts,
-      multiDragState.originalSelection,
+      originalSelection,
       allRecordIdsWithoutGroupCallbackSelector,
       resetVirtualization,
       triggerFetchPagesWithoutDebounce,
     ],
   );
 
-  return { processDragOperationWithoutGroup };
+  return { processTableWithoutGroupRecordDrop };
 };

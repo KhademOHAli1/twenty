@@ -5,14 +5,14 @@ import { isDefined } from 'twenty-shared/utils';
 import { recordGroupDefinitionFamilyState } from '@/object-record/record-group/states/recordGroupDefinitionFamilyState';
 import { getSnapshotValue } from '@/ui/utilities/state/utils/getSnapshotValue';
 
-import { processSingleDrag } from '@/object-record/record-drag/shared/utils/processSingleDrag';
+import { processSingleDrag } from '@/object-record/record-drag/utils/processSingleDrag';
 import { type RecordGroupDefinition } from '@/object-record/record-group/types/RecordGroupDefinition';
 import { extractRecordPositions } from './extractRecordPositions';
 import { getDragOperationType } from './getDragOperationType';
 import { processMultiDrag } from './processMultiDrag';
 
-type ProcessGroupDragOperationParams = {
-  result: DropResult;
+type ProcessGroupDropParams = {
+  groupDropResult: DropResult;
   snapshot: Snapshot;
   selectedRecordIds: string[];
   recordIdsByGroupFamilyState: any;
@@ -22,18 +22,18 @@ type ProcessGroupDragOperationParams = {
   ) => void;
 };
 
-export const processGroupDragOperation = ({
-  result,
+export const processGroupDrop = ({
+  groupDropResult,
   snapshot,
   selectedRecordIds,
   recordIdsByGroupFamilyState,
   onUpdateRecord,
-}: ProcessGroupDragOperationParams) => {
-  if (!result.destination) {
+}: ProcessGroupDropParams) => {
+  if (!groupDropResult.destination) {
     return;
   }
 
-  const destinationGroupId = result.destination.droppableId;
+  const destinationGroupId = groupDropResult.destination.droppableId;
 
   const recordGroup = getSnapshotValue(
     snapshot,
@@ -49,7 +49,7 @@ export const processGroupDragOperation = ({
     recordIdsByGroupFamilyState(destinationGroupId),
   ) as string[];
 
-  const draggedRecordId = result.draggableId;
+  const draggedRecordId = groupDropResult.draggableId;
 
   const dragOperationType = getDragOperationType({
     draggedRecordId,
@@ -87,13 +87,13 @@ export const processGroupDragOperation = ({
     snapshot,
   );
 
-  const destinationIndex = result.destination.index;
+  const destinationIndex = groupDropResult.destination.index;
 
   const isDroppedAfterList = destinationIndex >= recordsWithPosition.length;
 
   const targetRecord = isDroppedAfterList
     ? recordsWithPosition.at(-1)
-    : recordsWithPosition.at(result.destination.index);
+    : recordsWithPosition.at(groupDropResult.destination.index);
 
   if (!isDefined(targetRecord)) {
     throw new Error(

@@ -1,4 +1,4 @@
-import { type MultiDragResult } from '@/object-record/record-drag/shared/types/MultiDragResult';
+import { type MultiDragResult } from '@/object-record/record-drag/types/MultiDragResult';
 import { type RecordWithPosition } from '@/object-record/utils/computeNewPositionOfDraggedRecord';
 import { computeNewPositionsOfDraggedRecords } from '@/object-record/utils/computeNewPositionsOfDraggedRecords';
 

@@ -2,11 +2,11 @@ import { renderHook } from '@testing-library/react';
 import { act } from 'react';
 import { RecoilRoot, useSetRecoilState } from 'recoil';
 
-import { draggedRecordIdsComponentState } from '@/object-record/record-drag/board/states/draggedRecordIdsComponentState';
-import { isMultiDragActiveComponentState } from '@/object-record/record-drag/board/states/isMultiDragActiveComponentState';
-import { originalSelectionComponentState } from '@/object-record/record-drag/board/states/originalSelectionComponentState';
-import { primaryDraggedRecordIdComponentState } from '@/object-record/record-drag/board/states/primaryDraggedRecordIdComponentState';
-import { useEndRecordDrag } from '@/object-record/record-drag/shared/hooks/useEndRecordDrag';
+import { useEndRecordDrag } from '@/object-record/record-drag/hooks/useEndRecordDrag';
+import { draggedRecordIdsComponentState } from '@/object-record/record-drag/states/draggedRecordIdsComponentState';
+import { isMultiDragActiveComponentState } from '@/object-record/record-drag/states/isMultiDragActiveComponentState';
+import { originalSelectionComponentState } from '@/object-record/record-drag/states/originalSelectionComponentState';
+import { primaryDraggedRecordIdComponentState } from '@/object-record/record-drag/states/primaryDraggedRecordIdComponentState';
 import { draggedRecordIdsTableComponentState } from '@/object-record/record-drag/table/states/draggedRecordIdsTableComponentState';
 import { isMultiDragActiveTableComponentState } from '@/object-record/record-drag/table/states/isMultiDragActiveTableComponentState';
 import { originalSelectionTableComponentState } from '@/object-record/record-drag/table/states/originalSelectionTableComponentState';

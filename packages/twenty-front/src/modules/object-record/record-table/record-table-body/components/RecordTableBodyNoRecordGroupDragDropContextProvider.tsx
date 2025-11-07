@@ -10,9 +10,9 @@ import { useRecordTableContextOrThrow } from '@/object-record/record-table/conte
 import { useRecoilComponentCallbackState } from '@/ui/utilities/state/component-state/hooks/useRecoilComponentCallbackState';
 import { getSnapshotValue } from '@/ui/utilities/state/utils/getSnapshotValue';
 
-import { useEndRecordDrag } from '@/object-record/record-drag/shared/hooks/useEndRecordDrag';
-import { useStartRecordDrag } from '@/object-record/record-drag/shared/hooks/useStartRecordDrag';
-import { useRecordTableWithoutGroupDragOperations } from '@/object-record/record-drag/table/hooks/useRecordTableWithoutGroupDragOperations';
+import { useEndRecordDrag } from '@/object-record/record-drag/hooks/useEndRecordDrag';
+import { useProcessTableWithoutGroupRecordDrop } from '@/object-record/record-drag/hooks/useProcessTableWithoutGroupRecordDrop';
+import { useStartRecordDrag } from '@/object-record/record-drag/hooks/useStartRecordDrag';
 import { selectedRowIdsComponentSelector } from '../../states/selectors/selectedRowIdsComponentSelector';
 
 export const RecordTableBodyNoRecordGroupDragDropContextProvider = ({
@@ -30,7 +30,7 @@ export const RecordTableBodyNoRecordGroupDragDropContextProvider = ({
   const { startDrag } = useStartRecordDrag('table', recordTableId);
   const { endDrag } = useEndRecordDrag('table', recordTableId);
   const { processDragOperationWithoutGroup } =
-    useRecordTableWithoutGroupDragOperations();
+    useProcessTableWithoutGroupRecordDrop();
 
   const handleDragStart = useRecoilCallback(
     ({ snapshot }) =>

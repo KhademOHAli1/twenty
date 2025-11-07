@@ -3,11 +3,12 @@ import { useContext } from 'react';
 import { useRecoilCallback } from 'recoil';
 
 import { RecordBoardContext } from '@/object-record/record-board/contexts/RecordBoardContext';
-import { processGroupDragOperation } from '@/object-record/record-drag/shared/utils/processGroupDragOperation';
+
+import { processGroupDrop } from '@/object-record/record-drag/utils/processGroupDrop';
 import { recordIndexRecordIdsByGroupComponentFamilyState } from '@/object-record/record-index/states/recordIndexRecordIdsByGroupComponentFamilyState';
 import { useRecoilComponentCallbackState } from '@/ui/utilities/state/component-state/hooks/useRecoilComponentCallbackState';
 
-export const useRecordBoardDragOperations = () => {
+export const useProcessBoardCardDrop = () => {
   const { updateOneRecord, selectFieldMetadataItem } =
     useContext(RecordBoardContext);
 
@@ -16,13 +17,13 @@ export const useRecordBoardDragOperations = () => {
       recordIndexRecordIdsByGroupComponentFamilyState,
     );
 
-  const processDragOperation = useRecoilCallback(
+  const processBoardCardDrop = useRecoilCallback(
     ({ snapshot }) =>
-      (result: DropResult, selectedRecordIds: string[]) => {
+      (boardCardDropResult: DropResult, selectedRecordIds: string[]) => {
         if (!selectFieldMetadataItem) return;
 
-        processGroupDragOperation({
-          result,
+        processGroupDrop({
+          groupDropResult: boardCardDropResult,
           snapshot,
           selectedRecordIds,
           recordIdsByGroupFamilyState: recordIndexRecordIdsByGroupFamilyState,
@@ -45,6 +46,6 @@ export const useRecordBoardDragOperations = () => {
   );
 
   return {
-    processDragOperation,
+    processBoardCardDrop,
   };
 };

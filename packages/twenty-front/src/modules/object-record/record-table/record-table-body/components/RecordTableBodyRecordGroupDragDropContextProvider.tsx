@@ -6,8 +6,8 @@ import {
 import { type ReactNode } from 'react';
 import { useRecoilCallback } from 'recoil';
 
-import { useEndRecordDrag } from '@/object-record/record-drag/shared/hooks/useEndRecordDrag';
-import { useStartRecordDrag } from '@/object-record/record-drag/shared/hooks/useStartRecordDrag';
+import { useEndRecordDrag } from '@/object-record/record-drag/hooks/useEndRecordDrag';
+import { useStartRecordDrag } from '@/object-record/record-drag/hooks/useStartRecordDrag';
 import { useRecordTableGroupDragOperations } from '@/object-record/record-drag/table/hooks/useRecordTableGroupDragOperations';
 import { useRecordTableContextOrThrow } from '@/object-record/record-table/contexts/RecordTableContext';
 import { selectedRowIdsComponentSelector } from '@/object-record/record-table/states/selectors/selectedRowIdsComponentSelector';

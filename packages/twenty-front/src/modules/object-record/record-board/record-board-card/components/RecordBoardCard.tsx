@@ -9,8 +9,6 @@ import { useRecordDragState } from '@/object-record/record-drag/shared/hooks/use
 
 import { useActiveRecordBoardCard } from '@/object-record/record-board/hooks/useActiveRecordBoardCard';
 import { useFocusedRecordBoardCard } from '@/object-record/record-board/hooks/useFocusedRecordBoardCard';
-import { RecordBoardCardCellEditModePortal } from '@/object-record/record-board/record-board-card/anchored-portal/components/RecordBoardCardCellEditModePortal';
-import { RecordBoardCardCellHoveredPortal } from '@/object-record/record-board/record-board-card/anchored-portal/components/RecordBoardCardCellHoveredPortal';
 import { RecordBoardCardBody } from '@/object-record/record-board/record-board-card/components/RecordBoardCardBody';
 import { RecordBoardCardHeader } from '@/object-record/record-board/record-board-card/components/RecordBoardCardHeader';
 import { RECORD_BOARD_CARD_CLICK_OUTSIDE_ID } from '@/object-record/record-board/record-board-card/constants/RecordBoardCardClickOutsideId';
@@ -29,8 +27,7 @@ import { useSetRecoilComponentState } from '@/ui/utilities/state/component-state
 import { useGetCurrentViewOnly } from '@/views/hooks/useGetCurrentViewOnly';
 import styled from '@emotion/styled';
 import { useContext } from 'react';
-import { InView, useInView } from 'react-intersection-observer';
-import { AnimatedEaseInOut } from 'twenty-ui/utilities';
+import { useInView } from 'react-intersection-observer';
 import { useDebouncedCallback } from 'use-debounce';
 
 const StyledCardContainer = styled.div<{ isPrimaryMultiDrag?: boolean }>`
@@ -173,43 +170,37 @@ export const RecordBoardCard = () => {
         data-click-outside-id={RECORD_BOARD_CARD_CLICK_OUTSIDE_ID}
         onContextMenu={handleContextMenuOpen}
       >
-        <InView>
-          <StyledCardContainer isPrimaryMultiDrag={isPrimaryMultiDrag}>
-            {isPrimaryMultiDrag &&
-              Array.from({
-                length: Math.min(
-                  5,
-                  multiDragState.originalSelection.length - 1,
-                ),
-              }).map((_, index) => (
-                <StyledRecordBoardCardStackCard
-                  key={index}
-                  offset={index + 1}
-                />
-              ))}
+        {/* <InView> */}
+        <StyledCardContainer isPrimaryMultiDrag={isPrimaryMultiDrag}>
+          {isPrimaryMultiDrag &&
+            Array.from({
+              length: Math.min(5, multiDragState.originalSelection.length - 1),
+            }).map((_, index) => (
+              <StyledRecordBoardCardStackCard key={index} offset={index + 1} />
+            ))}
 
-            <RecordCard
-              ref={cardRef}
-              data-selected={isCurrentCardSelected}
-              data-focused={isCurrentCardFocused}
-              data-active={isCurrentCardActive}
-              onMouseLeave={onMouseLeaveBoard}
-              onClick={handleCardClick}
-              isPrimaryMultiDrag={isPrimaryMultiDrag}
-              isSecondaryDragged={isSecondaryDragged}
-            >
-              <RecordBoardCardHeader />
-              <AnimatedEaseInOut
-                isOpen={isCardExpanded || !isCompactModeActive}
-                initial={false}
-              >
-                <RecordBoardCardBody />
-              </AnimatedEaseInOut>
-            </RecordCard>
-          </StyledCardContainer>
-          <RecordBoardCardCellHoveredPortal />
-          <RecordBoardCardCellEditModePortal />
-        </InView>
+          <RecordCard
+            ref={cardRef}
+            data-selected={isCurrentCardSelected}
+            data-focused={isCurrentCardFocused}
+            data-active={isCurrentCardActive}
+            onMouseLeave={onMouseLeaveBoard}
+            onClick={handleCardClick}
+            isPrimaryMultiDrag={isPrimaryMultiDrag}
+            isSecondaryDragged={isSecondaryDragged}
+          >
+            <RecordBoardCardHeader />
+            {/* <AnimatedEaseInOut
+              isOpen={isCardExpanded || !isCompactModeActive}
+              initial={false}
+            > */}
+            <RecordBoardCardBody />
+            {/* </AnimatedEaseInOut> */}
+          </RecordCard>
+        </StyledCardContainer>
+        {/* <RecordBoardCardCellHoveredPortal /> */}
+        {/* <RecordBoardCardCellEditModePortal /> */}
+        {/* </InView> */}
       </StyledBoardCardWrapper>
     </RecordBoardCardComponentInstanceContext.Provider>
   );
