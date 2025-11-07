@@ -2,30 +2,31 @@ import { useRecoilCallback } from 'recoil';
 
 import { useRecoilComponentCallbackState } from '@/ui/utilities/state/component-state/hooks/useRecoilComponentCallbackState';
 
-import { draggedRecordIdsComponentState } from '@/object-record/record-drag/states/draggedRecordIdsComponentState';
 import { isMultiDragActiveComponentState } from '@/object-record/record-drag/states/isMultiDragActiveComponentState';
-import { originalSelectionComponentState } from '@/object-record/record-drag/states/originalSelectionComponentState';
+
+import { draggedRecordIdsComponentState } from '@/object-record/record-drag/states/draggedRecordIdsComponentState';
+import { originalDragSelectionComponentState } from '@/object-record/record-drag/states/originalDragSelectionComponentState';
 import { primaryDraggedRecordIdComponentState } from '@/object-record/record-drag/states/primaryDraggedRecordIdComponentState';
 
-export const useEndRecordDrag = (instanceId?: string) => {
+export const useEndRecordDrag = (contextStoreInstanceId?: string) => {
   const isMultiDragActiveCallbackState = useRecoilComponentCallbackState(
     isMultiDragActiveComponentState,
-    instanceId,
+    contextStoreInstanceId,
   );
 
   const draggedRecordIdsCallbackState = useRecoilComponentCallbackState(
     draggedRecordIdsComponentState,
-    instanceId,
+    contextStoreInstanceId,
   );
 
   const primaryDraggedRecordIdCallbackState = useRecoilComponentCallbackState(
     primaryDraggedRecordIdComponentState,
-    instanceId,
+    contextStoreInstanceId,
   );
 
   const originalSelectionCallbackState = useRecoilComponentCallbackState(
-    originalSelectionComponentState,
-    instanceId,
+    originalDragSelectionComponentState,
+    contextStoreInstanceId,
   );
 
   const endRecordDrag = useRecoilCallback(

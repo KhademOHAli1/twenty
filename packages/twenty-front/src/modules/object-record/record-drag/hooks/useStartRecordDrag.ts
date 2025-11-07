@@ -1,19 +1,14 @@
 import { draggedRecordIdsComponentState } from '@/object-record/record-drag/states/draggedRecordIdsComponentState';
 import { isMultiDragActiveComponentState } from '@/object-record/record-drag/states/isMultiDragActiveComponentState';
-import { originalSelectionComponentState } from '@/object-record/record-drag/states/originalSelectionComponentState';
+import { originalDragSelectionComponentState } from '@/object-record/record-drag/states/originalDragSelectionComponentState';
+
 import { primaryDraggedRecordIdComponentState } from '@/object-record/record-drag/states/primaryDraggedRecordIdComponentState';
 import { getDragOperationType } from '@/object-record/record-drag/utils/getDragOperationType';
 import { useRecoilComponentCallbackState } from '@/ui/utilities/state/component-state/hooks/useRecoilComponentCallbackState';
 import { type DragStart } from '@hello-pangea/dnd';
 import { useRecoilCallback } from 'recoil';
 
-export type UseStartRecordDragParams = {
-  contextStoreInstanceId?: string;
-};
-
-export const useStartRecordDrag = ({
-  contextStoreInstanceId,
-}: UseStartRecordDragParams) => {
+export const useStartRecordDrag = (contextStoreInstanceId?: string) => {
   const isMultiDragActiveCallbackState = useRecoilComponentCallbackState(
     isMultiDragActiveComponentState,
     contextStoreInstanceId,
@@ -30,7 +25,7 @@ export const useStartRecordDrag = ({
   );
 
   const originalSelectionCallbackState = useRecoilComponentCallbackState(
-    originalSelectionComponentState,
+    originalDragSelectionComponentState,
     contextStoreInstanceId,
   );
 

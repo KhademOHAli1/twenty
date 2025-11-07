@@ -1,10 +1,10 @@
 import { ContextStoreComponentInstanceContext } from '@/context-store/states/contexts/ContextStoreComponentInstanceContext';
 import { createComponentState } from '@/ui/utilities/state/component-state/utils/createComponentState';
 
-export const primaryDraggedRecordIdComponentState = createComponentState<
-  string | null
+export const originalDragSelectionComponentState = createComponentState<
+  string[]
 >({
-  key: 'primaryDraggedRecordIdComponentState',
-  defaultValue: null,
+  key: 'originalDragSelectionComponentState',
+  defaultValue: [],
   componentInstanceContext: ContextStoreComponentInstanceContext,
 });

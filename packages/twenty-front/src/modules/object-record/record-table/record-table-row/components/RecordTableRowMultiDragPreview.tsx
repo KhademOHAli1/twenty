@@ -1,9 +1,9 @@
 import styled from '@emotion/styled';
 import { NotificationCounter } from 'twenty-ui/navigation';
 
-import { useRecordTableContextOrThrow } from '@/object-record/record-table/contexts/RecordTableContext';
+import { originalDragSelectionComponentState } from '@/object-record/record-drag/states/originalDragSelectionComponentState';
 import { useRecordTableRowContextOrThrow } from '@/object-record/record-table/contexts/RecordTableRowContext';
-import { useRecordDragState } from '@/object-record/record-drag/shared/hooks/useRecordDragState';
+import { useRecoilComponentValue } from '@/ui/utilities/state/component-state/hooks/useRecoilComponentValue';
 
 const StyledNotificationCounter = styled(NotificationCounter)`
   position: absolute;
@@ -20,12 +20,14 @@ export const RecordTableRowMultiDragPreview = ({
   isDragging,
 }: RecordTableRowMultiDragPreviewProps) => {
   const { recordId } = useRecordTableRowContextOrThrow();
-  const { recordTableId } = useRecordTableContextOrThrow();
-  const multiDragState = useRecordDragState('table', recordTableId);
+
+  const originalDragSelection = useRecoilComponentValue(
+    originalDragSelectionComponentState,
+  );
 
   const isCurrentRowSelected =
-    multiDragState?.originalSelection.includes(recordId) || false;
-  const selectedCount = multiDragState?.originalSelection.length ?? 0;
+    originalDragSelection.includes(recordId) || false;
+  const selectedCount = originalDragSelection.length ?? 0;
 
   const shouldShow = isDragging && isCurrentRowSelected && selectedCount > 1;
 

@@ -2,8 +2,8 @@ import { RecordBoardContext } from '@/object-record/record-board/contexts/Record
 import { recordBoardSelectedRecordIdsComponentSelector } from '@/object-record/record-board/states/selectors/recordBoardSelectedRecordIdsComponentSelector';
 import { useEndRecordDrag } from '@/object-record/record-drag/hooks/useEndRecordDrag';
 import { useProcessBoardCardDrop } from '@/object-record/record-drag/hooks/useProcessBoardCardDrop';
-import { useStartCardDrag } from '@/object-record/record-drag/hooks/useStartRecordDrag';
-import { originalSelectionComponentState } from '@/object-record/record-drag/states/originalSelectionComponentState';
+import { useStartRecordDrag } from '@/object-record/record-drag/hooks/useStartRecordDrag';
+import { originalDragSelectionComponentState } from '@/object-record/record-drag/states/originalDragSelectionComponentState';
 
 import { RECORD_INDEX_REMOVE_SORTING_MODAL_ID } from '@/object-record/record-index/constants/RecordIndexRemoveSortingModalId';
 import { currentRecordSortsComponentState } from '@/object-record/record-sort/states/currentRecordSortsComponentState';
@@ -33,16 +33,15 @@ export const RecordBoardDragDropContext = ({
     recordBoardId,
   );
 
-  const originalSelectionCallbackState = useRecoilComponentCallbackState(
-    originalSelectionComponentState,
+  const originalDragSelectionCallbackState = useRecoilComponentCallbackState(
+    originalDragSelectionComponentState,
   );
 
-  const { startCardDrag } = useStartCardDrag(recordBoardId);
-  const { endDrag } = useEndRecordDrag('board', recordBoardId);
+  const { startRecordDrag } = useStartRecordDrag();
+  const { endRecordDrag } = useEndRecordDrag();
   // const multiDragState = useRecordDragState('board', recordBoardId);
 
-  const { processBoardCardDrop: processDragOperation } =
-    useProcessBoardCardDrop();
+  const { processBoardCardDrop } = useProcessBoardCardDrop();
 
   const { openModal } = useModal();
 
@@ -54,15 +53,15 @@ export const RecordBoardDragDropContext = ({
           recordBoardSelectedRecordIdsSelector,
         );
 
-        startCardDrag(start, currentSelectedRecordIds);
+        startRecordDrag(start, currentSelectedRecordIds);
       },
-    [recordBoardSelectedRecordIdsSelector, startCardDrag],
+    [recordBoardSelectedRecordIdsSelector, startRecordDrag],
   );
 
   const handleDragEnd: OnDragEndResponder = useRecoilCallback(
     ({ snapshot }) =>
       (result) => {
-        endDrag();
+        endRecordDrag();
 
         if (!result.destination) return;
 
@@ -78,22 +77,22 @@ export const RecordBoardDragDropContext = ({
 
         const originalSelection = getSnapshotValue(
           snapshot,
-          originalSelectionCallbackState,
+          originalDragSelectionCallbackState,
         );
 
-        processDragOperation(result, originalSelection);
+        processBoardCardDrop(result, originalSelection);
       },
     [
-      processDragOperation,
-      originalSelectionCallbackState,
-      endDrag,
+      processBoardCardDrop,
+      originalDragSelectionCallbackState,
+      endRecordDrag,
       currentRecordSortCallbackState,
       openModal,
     ],
   );
 
   return (
-    <DragDropContext onDragStart={handleDragStart} onDragEnd={() => {}}>
+    <DragDropContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       {children}
     </DragDropContext>
   );

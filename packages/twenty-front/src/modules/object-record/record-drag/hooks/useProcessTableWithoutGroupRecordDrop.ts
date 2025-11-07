@@ -1,7 +1,9 @@
 import { type DropResult } from '@hello-pangea/dnd';
 
 import { useUpdateOneRecord } from '@/object-record/hooks/useUpdateOneRecord';
-import { getDragOperationType } from '@/object-record/record-drag/shared/utils/getDragOperationType';
+
+import { originalDragSelectionComponentState } from '@/object-record/record-drag/states/originalDragSelectionComponentState';
+import { getDragOperationType } from '@/object-record/record-drag/utils/getDragOperationType';
 import { processMultiDrag } from '@/object-record/record-drag/utils/processMultiDrag';
 import { processSingleDrag } from '@/object-record/record-drag/utils/processSingleDrag';
 import { RECORD_INDEX_REMOVE_SORTING_MODAL_ID } from '@/object-record/record-index/constants/RecordIndexRemoveSortingModalId';
@@ -21,7 +23,7 @@ import { useRecoilCallback } from 'recoil';
 import { isDefined } from 'twenty-shared/utils';
 
 export const useProcessTableWithoutGroupRecordDrop = () => {
-  const { objectNameSingular, recordTableId } = useRecordTableContextOrThrow();
+  const { objectNameSingular } = useRecordTableContextOrThrow();
 
   const { updateOneRecord: updateOneRow } = useUpdateOneRecord({
     objectNameSingular,
@@ -32,7 +34,10 @@ export const useProcessTableWithoutGroupRecordDrop = () => {
 
   const selectedRowIdsSelector = useRecoilComponentCallbackState(
     selectedRowIdsComponentSelector,
-    recordTableId,
+  );
+
+  const originalDragSelectionCallbackState = useRecoilComponentCallbackState(
+    originalDragSelectionComponentState,
   );
 
   const currentRecordSorts = useRecoilComponentValue(
@@ -122,10 +127,15 @@ export const useProcessTableWithoutGroupRecordDrop = () => {
             );
           }
 
+          const originalDragSelection = getSnapshotValue(
+            snapshot,
+            originalDragSelectionCallbackState,
+          );
+
           const multiDragResult = processMultiDrag({
             draggedRecordId,
             targetRecordId: targetRecordId ?? '',
-            selectedRecordIds: originalSelection,
+            selectedRecordIds: originalDragSelection,
             recordsWithPosition: contiguousRecordsWithPosition,
           });
 
@@ -148,7 +158,7 @@ export const useProcessTableWithoutGroupRecordDrop = () => {
       updateOneRow,
       openModal,
       currentRecordSorts,
-      originalSelection,
+      originalDragSelectionCallbackState,
       allRecordIdsWithoutGroupCallbackSelector,
       resetVirtualization,
       triggerFetchPagesWithoutDebounce,
