@@ -58,7 +58,6 @@ const StyledBoardCardWrapper = styled.div`
 `;
 
 export const RecordBoardCard = () => {
-  // console.log('RecordBoardCard');
   const { recordId, rowIndex, columnIndex } = useContext(
     RecordBoardCardContext,
   );
