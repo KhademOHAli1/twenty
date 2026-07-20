@@ -32,7 +32,7 @@ jobs:
     needs: changed-files-check
     if: needs.changed-files-check.outputs.any_changed == 'true'
     timeout-minutes: 30
-    runs-on: depot-ubuntu-24.04-8
+    runs-on: ${{ github.repository == 'twentyhq/twenty' && 'depot-ubuntu-24.04-8' || 'ubuntu-latest' }}
     env:
       REACT_APP_SERVER_BASE_URL: http://localhost:3000
     steps:
@@ -58,7 +58,7 @@ jobs:
           key: ${{ env.STORYBOOK_BUILD_CACHE_KEY_FOR_SAVE_ACTION }}
   front-sb-test:
     timeout-minutes: 30
-    runs-on: depot-ubuntu-24.04-8
+    runs-on: ${{ github.repository == 'twentyhq/twenty' && 'depot-ubuntu-24.04-8' || 'ubuntu-latest' }}
     needs: front-sb-build
     strategy:
       fail-fast: false
@@ -121,9 +121,9 @@ jobs:
         run: npx nx storybook:coverage twenty-front --checkCoverage=true --configuration=${{ matrix.storybook_scope }}
   front-chromatic-deployment:
     timeout-minutes: 30
-    if: contains(github.event.pull_request.labels.*.name, 'run-chromatic') || github.event_name == 'push'
+    if: (github.repository == 'twentyhq/twenty' || vars.ENABLE_UPSTREAM_WORKFLOWS == 'true') && (contains(github.event.pull_request.labels.*.name, 'run-chromatic') || github.event_name == 'push')
     needs: front-sb-build
-    runs-on: depot-ubuntu-24.04-8
+    runs-on: ${{ github.repository == 'twentyhq/twenty' && 'depot-ubuntu-24.04-8' || 'ubuntu-latest' }}
     env:
       REACT_APP_SERVER_BASE_URL: http://127.0.0.1:3000
       CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}

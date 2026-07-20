@@ -47,7 +47,7 @@ jobs:
           tasks: ${{ matrix.task }}
   cli-e2e-test:
     timeout-minutes: 30
-    runs-on: depot-ubuntu-24.04-8
+    runs-on: ${{ github.repository == 'twentyhq/twenty' && 'depot-ubuntu-24.04-8' || 'ubuntu-latest' }}
     needs: [changed-files-check, cli-test]
     if: needs.changed-files-check.outputs.any_changed == 'true'
     services:

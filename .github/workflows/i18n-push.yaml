@@ -17,6 +17,7 @@ concurrency:
 jobs:
   extract_translations:
     name: Extract and upload translations
+    if: github.repository == 'twentyhq/twenty' || vars.ENABLE_UPSTREAM_WORKFLOWS == 'true' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
