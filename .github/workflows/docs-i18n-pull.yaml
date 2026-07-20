@@ -29,6 +29,7 @@ concurrency:
 jobs:
   pull_docs_translations:
     name: Pull docs translations
+    if: github.repository == 'twentyhq/twenty' || vars.ENABLE_UPSTREAM_WORKFLOWS == 'true' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -106,4 +107,3 @@ jobs:
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
