@@ -10,6 +10,7 @@ on:
 
 jobs:
   preview-environment:
+    if: github.repository == 'twentyhq/twenty' || vars.ENABLE_UPSTREAM_WORKFLOWS == 'true'
     timeout-minutes: 310
     runs-on: ubuntu-latest
     steps:
@@ -106,7 +107,7 @@ jobs:
           echo "⏱️ This environment will be available for 5 hours"
       
       - name: Post comment on PR
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
