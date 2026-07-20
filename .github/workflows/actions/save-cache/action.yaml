@@ -1,4 +1,5 @@
 name: Save cache
+description: Save a workflow cache entry
 inputs:
   key:
     required: true
